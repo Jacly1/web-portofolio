@@ -291,17 +291,6 @@ export default function Home() {
               className="relative"
             >
               <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-primary via-purple-500 to-secondary opacity-75 blur-2xl"></div>
-              <div className="relative">
-                <Image
-                  src="/assets/profil.jpg"
-                  alt="Jacly Permana"
-                  width={500}
-                  height={500}
-                  quality={100}
-                  priority
-                  className="rounded-full border-4 border-white/10 shadow-2xl"
-                />
-              </div>
             </motion.div>
           </div>
         </section>
