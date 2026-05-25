@@ -20,7 +20,7 @@ Portfolio website pribadi yang modern, responsif, dan interaktif — dibangun de
 
 Website portfolio personal yang menampilkan profil, pengalaman, keahlian, dan karya saya sebagai Fullstack Developer. Dirancang dengan estetika minimalis modern, dukungan dwibahasa (Indonesia & Inggris), serta animasi halus untuk memberikan pengalaman pengguna terbaik.
 
-**Live Site:** [https://jacly-permana.vercel.app](https://jacly-permana.vercel.app) *(opsional, sesuaikan)*
+**Live Site:** [https://jacly-permana.vercel.app](https://jacly-permana.vercel.app)
 
 ---
 
