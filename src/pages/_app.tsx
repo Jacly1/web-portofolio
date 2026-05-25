@@ -1,9 +1,8 @@
 import { type AppType } from "next/dist/shared/lib/utils";
-
 import "@/styles/globals.css";
 import "@/styles/locomotive-scroll.css";
-
 import { DM_Sans } from "next/font/google";
+import { LanguageProvider } from "@/lib/i18n";
 
 const dmSans = DM_Sans({
   display: "swap",
@@ -12,9 +11,11 @@ const dmSans = DM_Sans({
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-    <div lang={"en"} className={dmSans.className}>
-      <Component {...pageProps} />
-    </div>
+    <LanguageProvider>
+      <div className={dmSans.className}>
+        <Component {...pageProps} />
+      </div>
+    </LanguageProvider>
   );
 };
 

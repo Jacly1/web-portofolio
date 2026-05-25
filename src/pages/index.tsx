@@ -5,127 +5,61 @@ import { Button } from "@/components/ui/button";
 import {
   ChevronRight,
   Code2,
-  Frame,
   SearchCheck,
-  Eye,
   MonitorSmartphone,
   Database,
   Palette,
   FileCode,
+  Workflow,
   Mail,
   Linkedin,
   Instagram,
   Phone,
   Github,
+  GraduationCap,
+  Briefcase,
+  Trophy,
 } from "lucide-react";
 import { TriangleDownIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { cn, scrollTo } from "@/lib/utils";
 import Image from "next/image";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-  type CarouselApi,
-} from "@/components/ui/carousel";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { type CarouselApi } from "@/components/ui/carousel";
 import VanillaTilt from "vanilla-tilt";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/lib/i18n";
 
-
-
-const aboutStats = [
-  { label: "Years of experience", value: "<1" },
-  { label: "Technologies mastered", value: "10+" },
-  { label: "Projects completed", value: "5+" },
+// Static asset metadata that doesn't change per language
+const projectAssets = [
+  // Pharmacy Academy Library — ongoing freelance (YARSI)
+  {
+    image: "/assets/Web-yarsi.png",
+    href: "#",
+    technologies: [
+      "SLiMS",
+      "Laravel",
+      "PHP",
+      "MySQL",
+      "Google OAuth (Socialite)",
+      "SweetAlert",
+      "JavaScript",
+      "Figma",
+    ],
+  },
+  // Akunaja.id — premium digital account marketplace
+  {
+    image: "/assets/Web-akunaja.png",
+    href: "https://akunaja.id/",
+    technologies: ["Laravel", "Tailwind CSS", "MySQL", "JavaScript", "Payment Gateway"],
+  },
+  { image: "/assets/Web-sisfota.png", href: "https://sisfota.fmipa-untan.id/login", technologies: ["Laravel", "OAuth 2.0", "MySQL", "Bootstrap"] },
+  { image: "/assets/Web-kimia.png", href: "https://biology.fmipa.untan.ac.id/", technologies: ["WordPress", "MySQL", "Figma", "CSS"] },
+  { image: "/assets/Web-arcia.png", href: "#", technologies: ["Laravel", "MySQL", "Bootstrap", "Figma", "Safety Stock"] },
+  { image: "/assets/Web-cheve.png", href: "#", technologies: ["Laravel", "MySQL", "Tailwind CSS", "Figma"] },
 ];
 
-const projects = [
-  {
-    title: "SISFOTA Web — Google OAuth Authentication",
-    description: "Added Google OAuth sign-in using Laravel Socialite, with role-based access control and secure session management for SISFOTA.",
-    fullDescription: "Enhanced the SISFOTA (Sistem Informasi Tugas Akhir) web application by implementing Google OAuth 2.0 authentication using Laravel Socialite. Developed role-based access control system and secure session management to improve user experience and application security.",
-    image: "/assets/Web-sisfota.png",
-    href: "#",
-    period: "July 2025 (1-month project)",
-    technologies: ["Laravel", "OAuth 2.0", "MySQL", "Bootstrap"]
-  },
-  {
-    title: "Study Program Profile Website",
-    description: "Faculty profile website built with WordPress for FMIPA UNTAN",
-    fullDescription: "Developed a comprehensive faculty profile website for the Chemistry Study Program at FMIPA UNTAN. The site features program information, course details, faculty profiles, and news updates. Implemented custom themes and plugins to meet specific requirements.",
-    image: "/assets/Web-kimia.png",
-    href: "#",
-    period: "May 2025 – July 2025",
-    technologies: ["WordPress", "MySQL", "CSS"]
-  },
-  {
-    title: "SIAI Web (Sistem Informasi Arcia Inventori)",
-    description: "Inventory management system with Safety Stock method implementation",
-    fullDescription: "Designed and developed a comprehensive inventory management system for PT Gemilang Arcia Wellindo. The system features automated stock tracking, Safety Stock method calculations, incoming/outgoing goods recording, and detailed reporting capabilities for efficient inventory control.",
-    image: "/assets/Web-arcia.png",
-    href: "#",
-    period: "Sept 2024 – Jun 2025",
-    technologies: ["Laravel", "MySQL", "Bootstrap", "JavaScript"]
-  },
-  {
-    title: "Cheve Website",
-    description: "Full-stack web development with ERD design and UI/UX implementation",
-    fullDescription: "Built a complete e-commerce platform with custom database design using Entity Relationship Diagrams. Created intuitive UI/UX designs and developed both frontend and backend systems. Features include product catalog, shopping cart, and user authentication.",
-    image: "/assets/Web-cheve.png",
-    href: "#",
-    period: "Mar 2023 – Jun 2023",
-    technologies: ["Laravel", "MySQL", "Tailwind CSS", "Figma"]
-  }
-];
-
-const services = [
-  {
-    service: "Web Development",
-    description:
-      "Building robust websites using WordPress and Laravel framework with modern best practices.",
-    icon: Code2,
-  },
-  {
-    service: "UI/UX Design",
-    description:
-      "Creating intuitive, user-centric designs that enhance user experience and engagement.",
-    icon: Palette,
-  },
-  {
-    service: "Information System Design",
-    description:
-      "Designing enterprise architecture and digital business solutions for organizations.",
-    icon: Database,
-  },
-  {
-    service: "Responsive Design",
-    description:
-      "Developing websites that work seamlessly across all devices and screen sizes.",
-    icon: MonitorSmartphone,
-  },
-  {
-    service: "System Analysis",
-    description:
-      "Analyzing requirements and designing efficient solutions using systematic approaches.",
-    icon: SearchCheck,
-  },
-  {
-    service: "Full-Stack Development",
-    description:
-      "End-to-end development from database design to front-end implementation.",
-    icon: FileCode,
-  },
-];
-
-const skills = [
-  { category: "Languages", items: ["Indonesian (Advanced)", "English (Intermediate)"] },
-  { category: "Technical", items: ["Laravel (PHP)","WordPress","Tailwind CSS","Vite","JavaScript (basic)","MySQL","Database Design & ERD","UI/UX"] },
-  { category: "Tools", items: ["Microsoft Office", "Figma", "Canva", "GitHub"] },
-  { category: "Soft Skills", items: ["Communication", "Time Management", "Critical Thinking", "Problem Solving", "Teamwork & Collaboration"] },
-];
+const serviceIcons = [Code2, SearchCheck, Palette, Database, Workflow, MonitorSmartphone];
 
 export default function Home() {
   const refScrollContainer = useRef(null);
@@ -133,6 +67,7 @@ export default function Home() {
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
   const [current, setCurrent] = useState<number>(0);
   const [count, setCount] = useState<number>(0);
+  const { t } = useLanguage();
 
   // handle scroll
   useEffect(() => {
@@ -199,6 +134,14 @@ export default function Home() {
     });
   }, []);
 
+  // Merge per-language project copy with static asset metadata
+  const projects = t.projects.items.map((p, i) => ({
+    ...p,
+    image: projectAssets[i]?.image ?? "/assets/Web-cheve.png",
+    href: projectAssets[i]?.href ?? "#",
+    technologies: projectAssets[i]?.technologies ?? [],
+  }));
+
   return (
     <Container>
       <div ref={refScrollContainer}>
@@ -217,9 +160,11 @@ export default function Home() {
               data-scroll-speed=".09"
               className="flex flex-row items-center space-x-1.5"
             >
-              <span className={styles.pill}>Laravel</span>
-              <span className={styles.pill}>WordPress</span>
-              <span className={styles.pill}>UI/UX Design</span>
+              {t.hero.pills.map((pill) => (
+                <span key={pill} className={styles.pill}>
+                  {pill}
+                </span>
+              ))}
             </div>
             <div>
               <h1
@@ -229,11 +174,11 @@ export default function Home() {
                 data-scroll-direction="horizontal"
               >
                 <span className="text-6xl tracking-tighter text-foreground 2xl:text-8xl">
-                  Hello, I&apos;m
+                  {t.hero.greeting}
                   <br />
                 </span>
                 <span className="clash-grotesk text-gradient text-6xl 2xl:text-8xl">
-                  Jacly Permana.
+                  {t.hero.name}
                 </span>
               </h1>
               <p
@@ -242,7 +187,7 @@ export default function Home() {
                 data-scroll-speed=".06"
                 className="mt-1 max-w-lg tracking-tight text-muted-foreground 2xl:text-xl"
               >
-                Specializing in web development and UI/UX design with expertise in WordPress and Laravel.
+                {t.hero.tagline}
               </p>
             </div>
             <span
@@ -253,14 +198,14 @@ export default function Home() {
             >
               <Link href="mailto:permanajacly@gmail.com" passHref>
                 <Button>
-                  Get in touch <ChevronRight className="ml-1 h-4 w-4" />
+                  {t.hero.cta} <ChevronRight className="ml-1 h-4 w-4" />
                 </Button>
               </Link>
               <Button
                 variant="outline"
                 onClick={() => scrollTo(document.querySelector("#about"))}
               >
-                Learn more
+                {t.hero.learnMore}
               </Button>
             </span>
 
@@ -270,12 +215,12 @@ export default function Home() {
                 isScrolled && styles["scroll--hidden"],
               )}
             >
-              Scroll to discover{" "}
+              {t.hero.scroll}{" "}
               <TriangleDownIcon className="mt-1 animate-bounce" />
             </div>
           </div>
-          
-          {/* Profile Image Section - Replacing Spline */}
+
+          {/* Glow placeholder (kept for layout symmetry) */}
           <div
             data-scroll
             data-scroll-speed="-.01"
@@ -286,7 +231,7 @@ export default function Home() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{
                 duration: 0.8,
-                ease: [0, 0.71, 0.2, 1.01]
+                ease: [0, 0.71, 0.2, 1.01],
               }}
               className="relative"
             >
@@ -304,11 +249,11 @@ export default function Home() {
             className="my-14 flex max-w-6xl flex-col justify-start space-y-10"
           >
             <h2 className="py-16 pb-2 text-3xl font-light leading-normal tracking-tighter text-foreground xl:text-[40px]">
-              Strong interest in web development, UI/UX design, information system design, and business process flow. Experienced in building websites with WordPress and Laravel, and actively involved in team projects. Skilled in design, basic programming, business process analysis, and business planning, supported by strong communication, time management, critical thinking, and problem-solving abilities.
+              {t.about.paragraph}
             </h2>
 
             <div className="grid grid-cols-2 gap-8 xl:grid-cols-3">
-              {aboutStats.map((stat) => (
+              {t.about.stats.map((stat) => (
                 <div
                   key={stat.label}
                   className="flex flex-col items-center text-center xl:items-start xl:text-start"
@@ -323,113 +268,129 @@ export default function Home() {
               ))}
             </div>
 
-{/* Education, Experience & Achievements */}
-<div className="mt-16 grid gap-8 md:grid-cols-2">
-  {/* Education */}
-  <motion.div
-    initial={{ opacity: 0, x: -20 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.5 }}
-    viewport={{ once: true }}
-    className="rounded-lg bg-white/5 p-6 backdrop-blur"
-  >
-    <h3 className="text-gradient clash-grotesk text-2xl font-semibold">Education</h3>
-    <div className="mt-4 space-y-4">
-      <div>
-        <p className="font-semibold text-foreground">Tanjungpura University</p>
-        <p className="text-sm text-muted-foreground">Bachelor of Information Systems</p>
-        <p className="text-sm text-muted-foreground">Aug 2021 – Jun 2025 | GPA: 3.75/4.00</p>
-      </div>
-      
-      <div className="border-t border-white/10 pt-3">
-        <p className="text-sm font-medium text-foreground">Additional Programs:</p>
-        <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
-          <li>• Merdeka Student Exchange (Batch 2) at Airlangga University</li>
-          <li>• Student Research Program at PT Gemilang Arcia Wellindo</li>
-        </ul>
-      </div>
-      
-      <div className="border-t border-white/10 pt-3">
-        <p className="text-sm font-medium text-foreground">Final Project:</p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Designing a website-based inventory application using the safety stock method
-        </p>
-      </div>
-    </div>
-  </motion.div>
+            {/* Education & Experience */}
+            <div className="mt-16 grid gap-8 md:grid-cols-2">
+              {/* Education */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                viewport={{ once: true }}
+                className="rounded-lg bg-white/5 p-6 backdrop-blur"
+              >
+                <div className="flex items-center gap-2">
+                  <GraduationCap className="h-5 w-5 text-primary" />
+                  <h3 className="text-gradient clash-grotesk text-2xl font-semibold">
+                    {t.about.educationTitle}
+                  </h3>
+                </div>
+                <div className="mt-4 space-y-4">
+                  <div>
+                    <p className="font-semibold text-foreground">
+                      {t.about.university}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {t.about.degree}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {t.about.period}
+                    </p>
+                  </div>
 
-  {/* Experience */}
-  <motion.div
-    initial={{ opacity: 0, x: 20 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.5 }}
-    viewport={{ once: true }}
-    className="rounded-lg bg-white/5 p-6 backdrop-blur"
-  >
-    <h3 className="text-gradient clash-grotesk text-2xl font-semibold">Experience</h3>
-    <div className="mt-4 space-y-3">
-      <div>
-        <p className="font-semibold text-foreground">ICT Team - FMIPA UNTAN</p>
-        <p className="text-sm text-muted-foreground">Web Development Division | Jan 2025 – Present</p>
-      </div>
-      <div>
-        <p className="font-semibold text-foreground">Research Intern</p>
-        <p className="text-sm text-muted-foreground">PT Gemilang Arcia Wellindo | Sept – Dec 2024</p>
-      </div>
-    </div>
-  </motion.div>
-</div>
+                  <div className="border-t border-white/10 pt-3">
+                    <p className="text-sm font-medium text-foreground">
+                      {t.about.additionalLabel}
+                    </p>
+                    <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
+                      {t.about.additionalItems.map((item) => (
+                        <li key={item}>• {item}</li>
+                      ))}
+                    </ul>
+                  </div>
 
-{/* Achievements Section */}
-<motion.div
-  initial={{ opacity: 0, y: 20 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5, delay: 0.2 }}
-  viewport={{ once: true }}
-  className="rounded-lg bg-white/5 p-6 backdrop-blur"
->
-  <div className="flex items-start gap-4">
-    
-    <div className="flex-1">
-      <h3 className="text-gradient clash-grotesk text-xl font-semibold">
-        Achievements
-      </h3>
-      <div className="mt-3 space-y-2">
-        <div className="flex items-start gap-2">
-          <div>
-            <p className="font-semibold text-foreground">1st Place - Sisfo Startup Day 7.0</p>
-            <p className="text-sm text-muted-foreground">Information Systems Competition</p>
-          </div>
-        </div>
-        <div className="flex items-start gap-2">
-          <div>
-            <p className="font-semibold text-foreground">Academic Excellence</p>
-            <p className="text-sm text-muted-foreground">GPA: 3.75/4.00 - Information Systems</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</motion.div>
+                  <div className="border-t border-white/10 pt-3">
+                    <p className="text-sm font-medium text-foreground">
+                      {t.about.thesisLabel}
+                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {t.about.thesis}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Experience */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                viewport={{ once: true }}
+                className="rounded-lg bg-white/5 p-6 backdrop-blur"
+              >
+                <div className="flex items-center gap-2">
+                  <Briefcase className="h-5 w-5 text-primary" />
+                  <h3 className="text-gradient clash-grotesk text-2xl font-semibold">
+                    {t.about.experienceTitle}
+                  </h3>
+                </div>
+                <div className="mt-4 space-y-4">
+                  {t.about.experiences.map((exp) => (
+                    <div
+                      key={`${exp.role}-${exp.org}`}
+                      className="border-l-2 border-primary/30 pl-3"
+                    >
+                      <p className="font-semibold text-foreground">{exp.role}</p>
+                      <p className="text-sm text-muted-foreground">{exp.org}</p>
+                      <p className="text-xs text-muted-foreground/70">
+                        {exp.period}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Achievements & Certifications */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="rounded-lg bg-white/5 p-6 backdrop-blur"
+            >
+              <div className="flex items-center gap-2">
+                <Trophy className="h-5 w-5 text-primary" />
+                <h3 className="text-gradient clash-grotesk text-xl font-semibold">
+                  {t.about.achievementsTitle}
+                </h3>
+              </div>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                {t.about.achievements.map((ach) => (
+                  <div
+                    key={ach.title}
+                    className="rounded-md bg-white/[3%] p-3 transition hover:bg-white/[6%]"
+                  >
+                    <p className="font-semibold text-foreground">{ach.title}</p>
+                    <p className="text-sm text-muted-foreground">{ach.sub}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
           </div>
         </section>
 
         {/* Skills Section */}
         <section id="skills" data-scroll-section>
-          <div
-            data-scroll
-            data-scroll-speed=".4"
-            className="my-24"
-          >
+          <div data-scroll data-scroll-speed=".4" className="my-24">
             <span className="text-gradient clash-grotesk text-sm font-semibold tracking-tighter">
-              💼 Skills & Expertise
+              {t.skills.eyebrow}
             </span>
             <h2 className="mt-3 text-4xl font-semibold tracking-tight xl:text-6xl">
-              Technical proficiency.
+              {t.skills.title}
             </h2>
-            
+
             <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-              {skills.map((skill, index) => (
+              {t.skills.groups.map((skill, index) => (
                 <motion.div
                   key={skill.category}
                   initial={{ opacity: 0, y: 20 }}
@@ -454,106 +415,126 @@ export default function Home() {
           </div>
         </section>
 
-{/* Projects */}
-<section id="projects" data-scroll-section>
-  {/* Gradient */}
-  <div className="relative isolate -z-10">
-    <div
-      className="absolute inset-x-0 -top-40 transform-gpu overflow-hidden blur-[100px] sm:-top-80 lg:-top-60"
-      aria-hidden="true"
-    >
-      <div
-        className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-primary via-primary to-secondary opacity-10 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
-        style={{
-          clipPath:
-            "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
-        }}
-      />
-    </div>
-  </div>
-  <div data-scroll data-scroll-speed=".4" className="my-64">
-    <span className="text-gradient clash-grotesk text-sm font-semibold tracking-tighter">
-      ✨ Projects
-    </span>
-    <h2 className="mt-3 text-4xl font-semibold tracking-tight xl:text-6xl">
-      Featured work & research.
-    </h2>
-    <p className="mt-1.5 text-base tracking-tight text-muted-foreground xl:text-lg">
-      From web development to system analysis, here are some projects that showcase my skills and experience.
-    </p>
+        {/* Projects */}
+        <section id="projects" data-scroll-section>
+          {/* Gradient */}
+          <div className="relative isolate -z-10">
+            <div
+              className="absolute inset-x-0 -top-40 transform-gpu overflow-hidden blur-[100px] sm:-top-80 lg:-top-60"
+              aria-hidden="true"
+            >
+              <div
+                className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-primary via-primary to-secondary opacity-10 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
+                style={{
+                  clipPath:
+                    "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+                }}
+              />
+            </div>
+          </div>
+          <div data-scroll data-scroll-speed=".4" className="my-64">
+            <span className="text-gradient clash-grotesk text-sm font-semibold tracking-tighter">
+              {t.projects.eyebrow}
+            </span>
+            <h2 className="mt-3 text-4xl font-semibold tracking-tight xl:text-6xl">
+              {t.projects.title}
+            </h2>
+            <p className="mt-1.5 text-base tracking-tight text-muted-foreground xl:text-lg">
+              {t.projects.subtitle}
+            </p>
 
-    {/* Grid Layout */}
-    <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-      {projects.map((project, index) => (
-        <motion.div
-          key={project.title}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: index * 0.1 }}
-          viewport={{ once: true }}
-        >
-          <Card className="group h-full overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-primary/20">
-            <Link href={project.href} target="_blank" passHref>
-              <CardHeader className="p-0">
-                <div className="relative overflow-hidden">
-                  {project.image.endsWith(".webm") ? (
-                    <video
-                      src={project.image}
-                      autoPlay
-                      loop
-                      muted
-                      className="aspect-video h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  ) : (
-                    <Image
-                      src={project.image}
-                      alt={project.title}
-                      width={600}
-                      height={300}
-                      quality={100}
-                      className="aspect-video h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                </div>
-              </CardHeader>
-              <CardContent className="p-6">
-                <h3 className="text-xl font-semibold tracking-tight text-foreground group-hover:text-primary transition-colors">
-                  {project.title}
-                </h3>
-                
-                {/* Full Description */}
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  {project.fullDescription}
-                </p>
+            {/* Grid Layout */}
+            <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+              {projects.map((project, index) => (
+                <motion.div
+                  key={project.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <Card className="group h-full overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-primary/20">
+                    <Link
+                      href={project.href}
+                      target={project.href !== "#" ? "_blank" : undefined}
+                      rel={
+                        project.href !== "#" ? "noopener noreferrer" : undefined
+                      }
+                      aria-label={`Open ${project.title}`}
+                      className={cn(
+                        "block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                        project.href === "#" && "pointer-events-none cursor-default",
+                      )}
+                      passHref
+                    >
+                      <CardHeader className="p-0">
+                        <div className="relative overflow-hidden">
+                          {project.image.endsWith(".webm") ? (
+                            <video
+                              src={project.image}
+                              autoPlay
+                              loop
+                              muted
+                              className="aspect-video h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            />
+                          ) : (
+                            <Image
+                              src={project.image}
+                              alt={project.title}
+                              width={600}
+                              height={300}
+                              quality={100}
+                              className="aspect-video h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            />
+                          )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                        </div>
+                      </CardHeader>
+                      <CardContent className="p-6">
+                        <h3 className="text-xl font-semibold tracking-tight text-foreground transition-colors group-hover:text-primary">
+                          {project.title}
+                        </h3>
 
-                {/* Technologies Used */}
-                <div className="mt-4">
-                  <p className="mb-2 text-xs font-medium text-muted-foreground">Technologies Used:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {project.technologies.map((tech) => (
-                      <span
-                        key={tech}
-                        className={styles.pill}
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                          {project.fullDescription}
+                        </p>
 
-                <div className="mt-4 flex items-center justify-between border-t border-white/5 pt-4">
-                  <span className="text-xs text-muted-foreground">{project.period}</span>
-                  <ChevronRight className="h-4 w-4 text-primary opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1" />
-                </div>
-              </CardContent>
-            </Link>
-          </Card>
-        </motion.div>
-      ))}
-    </div>
-  </div>
-</section>
+                        <div className="mt-4">
+                          <p className="mb-2 text-xs font-medium text-muted-foreground">
+                            {t.projects.techLabel}
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {project.technologies.map((tech) => (
+                              <span key={tech} className={styles.pill}>
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="mt-4 flex items-center justify-between border-t border-white/5 pt-4">
+                          <span className="text-xs text-muted-foreground">
+                            {project.period}
+                          </span>
+                          {project.href !== "#" ? (
+                            <span className="flex items-center gap-1 text-xs font-medium text-primary opacity-80 transition-all duration-300 group-hover:translate-x-0.5 group-hover:opacity-100">
+                              {t.projects.visit}
+                              <ChevronRight className="h-4 w-4" />
+                            </span>
+                          ) : (
+                            <span className="text-xs text-muted-foreground/60">
+                              {t.projects.private}
+                            </span>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Link>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* Services */}
         <section id="services" data-scroll-section>
@@ -575,138 +556,143 @@ export default function Home() {
             >
               <div className="flex flex-col py-6 xl:p-6">
                 <h2 className="text-4xl font-medium tracking-tight">
-                  What I offer?
+                  {t.services.title}
                   <br />
                   <span className="text-gradient clash-grotesk tracking-normal">
-                    Let me help you.
+                    {t.services.titleAccent}
                   </span>
                 </h2>
                 <p className="mt-2 tracking-tighter text-secondary-foreground">
-                  Here are some of the services I offer. If you have any
-                  questions, feel free to reach out.
+                  {t.services.subtitle}
                 </p>
               </div>
-              {services.map((service) => (
-                <div
-                  key={service.service}
-                  className="flex flex-col items-start rounded-md bg-white/5 p-14 shadow-md backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:bg-white/10 hover:shadow-md"
-                >
-                  <service.icon className="my-6 text-primary" size={20} />
-                  <span className="text-lg tracking-tight text-foreground">
-                    {service.service}
-                  </span>
-                  <span className="mt-2 tracking-tighter text-muted-foreground">
-                    {service.description}
-                  </span>
-                </div>
-              ))}
+              {t.services.items.map((service, idx) => {
+                const Icon = serviceIcons[idx] ?? FileCode;
+                return (
+                  <div
+                    key={service.service}
+                    className="flex flex-col items-start rounded-md bg-white/5 p-14 shadow-md backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:bg-white/10 hover:shadow-md"
+                  >
+                    <Icon className="my-6 text-primary" size={20} />
+                    <span className="text-lg tracking-tight text-foreground">
+                      {service.service}
+                    </span>
+                    <span className="mt-2 tracking-tighter text-muted-foreground">
+                      {service.description}
+                    </span>
+                  </div>
+                );
+              })}
             </motion.div>
           </div>
         </section>
 
-{/* Contact */}
-<section id="contact" data-scroll-section className="my-64">
-  <div
-    data-scroll
-    data-scroll-speed=".4"
-    data-scroll-position="top"
-    className="flex flex-col items-center justify-center rounded-lg bg-gradient-to-br from-primary/[6.5%] to-white/5 px-8 py-16 text-center xl:py-24"
-  >
-    <h2 className="text-4xl font-medium tracking-tighter xl:text-6xl">
-      Let&apos;s work{" "}
-      <span className="text-gradient clash-grotesk">together.</span>
-    </h2>
-    <p className="mt-1.5 text-base tracking-tight text-muted-foreground xl:text-lg">
-      I&apos;m currently available for freelance work and open to
-      discussing new projects.
-    </p>
-    
-    {/* Contact Buttons Grid */}
-    <div className="mt-10 grid w-full max-w-3xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {/* Email Button */}
-      <Link href="mailto:permanajacly@gmail.com" className="w-full">
-        <Button 
-          size="lg" 
-          className="w-full gap-2 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
-        >
-          <Mail className="h-5 w-5" />
-          Email Me
-        </Button>
-      </Link>
+        {/* Contact */}
+        <section id="contact" data-scroll-section className="my-64">
+          <div
+            data-scroll
+            data-scroll-speed=".4"
+            data-scroll-position="top"
+            className="flex flex-col items-center justify-center rounded-lg bg-gradient-to-br from-primary/[6.5%] to-white/5 px-8 py-16 text-center xl:py-24"
+          >
+            <h2 className="text-4xl font-medium tracking-tighter xl:text-6xl">
+              {t.contact.title}{" "}
+              <span className="text-gradient clash-grotesk">
+                {t.contact.titleAccent}
+              </span>
+            </h2>
+            <p className="mt-1.5 text-base tracking-tight text-muted-foreground xl:text-lg">
+              {t.contact.subtitle}
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {t.contact.location}
+            </p>
 
-      {/* LinkedIn Button */}
-      <Link 
-        href="https://www.linkedin.com/in/jacly-permana-5a14412b2/" 
-        target="_blank"
-        className="w-full"
-      >
-        <Button 
-          size="lg" 
-          variant="outline"
-          className="w-full gap-2 border-blue-500/50 hover:bg-blue-500/10"
-        >
-          <Linkedin className="h-5 w-5 text-blue-500" />
-          LinkedIn
-        </Button>
-      </Link>
+            {/* Contact Buttons Grid */}
+            <div className="mt-10 grid w-full max-w-3xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <Link href="mailto:permanajacly@gmail.com" className="w-full">
+                <Button
+                  size="lg"
+                  className="w-full gap-2 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
+                >
+                  <Mail className="h-5 w-5" />
+                  {t.contact.email}
+                </Button>
+              </Link>
 
-      {/* GitHub Button */}
-      <Link 
-        href="https://github.com/Jacly1" 
-        target="_blank"
-        className="w-full"
-      >
-        <Button 
-          size="lg" 
-          variant="outline"
-          className="w-full gap-2 border-gray-500/50 hover:bg-gray-500/10"
-        >
-          <Github className="h-5 w-5 text-gray-400" />
-          GitHub
-        </Button>
-      </Link>
+              <Link
+                href="https://www.linkedin.com/in/jacly-permana/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full"
+              >
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full gap-2 border-blue-500/50 hover:bg-blue-500/10"
+                >
+                  <Linkedin className="h-5 w-5 text-blue-500" />
+                  LinkedIn
+                </Button>
+              </Link>
 
-      {/* Instagram Button */}
-      <Link 
-        href="https://instagram.com/jacly_p" 
-        target="_blank"
-        className="w-full"
-      >
-        <Button 
-          size="lg" 
-          variant="outline"
-          className="w-full gap-2 border-pink-500/50 hover:bg-pink-500/10"
-        >
-          <Instagram className="h-5 w-5 text-pink-500" />
-          Instagram
-        </Button>
-      </Link>
+              <Link
+                href="https://github.com/Jacly1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full"
+              >
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full gap-2 border-gray-500/50 hover:bg-gray-500/10"
+                >
+                  <Github className="h-5 w-5 text-gray-400" />
+                  GitHub
+                </Button>
+              </Link>
 
-      {/* WhatsApp Button */}
-      <Link 
-        href="https://wa.me/6285828325550" 
-        target="_blank"
-        className="w-full"
-      >
-        <Button 
-          size="lg" 
-          variant="outline"
-          className="w-full gap-2 border-green-500/50 hover:bg-green-500/10"
-        >
-          <Phone className="h-5 w-5 text-green-500" />
-          WhatsApp
-        </Button>
-      </Link>
-    </div>
+              <Link
+                href="https://instagram.com/jacly_p"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full"
+              >
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full gap-2 border-pink-500/50 hover:bg-pink-500/10"
+                >
+                  <Instagram className="h-5 w-5 text-pink-500" />
+                  Instagram
+                </Button>
+              </Link>
 
-    {/* Alternative Contact Info */}
-    <div className="mt-8 flex flex-col gap-2 text-sm text-muted-foreground">
-      <p>📧 permanajacly@gmail.com</p>
-      <p>📱 +62 858 2832 5550</p>
-      <p>💻 github.com/jacly1</p>
-    </div>
-  </div>
-</section>
+              <Link
+                href="https://wa.me/6285828325550"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full"
+              >
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full gap-2 border-green-500/50 hover:bg-green-500/10"
+                >
+                  <Phone className="h-5 w-5 text-green-500" />
+                  {t.contact.whatsapp}
+                </Button>
+              </Link>
+            </div>
+
+            {/* Alternative Contact Info */}
+            <div className="mt-8 flex flex-col gap-2 text-sm text-muted-foreground">
+              <p>📧 permanajacly@gmail.com</p>
+              <p>📱 +62 858 2832 5550</p>
+              <p>💻 github.com/Jacly1</p>
+            </div>
+          </div>
+        </section>
       </div>
     </Container>
   );

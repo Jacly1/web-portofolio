@@ -7,6 +7,8 @@ import Footer from "@/components/Footer";
 import { useRouter } from "next/router";
 import Preloader from "@/components/Preloader";
 import styles from "@/styles/Container.module.css";
+import { useLanguage } from "@/lib/i18n";
+import { Globe } from "lucide-react";
 
 type IconProps = {
   ["data-hide"]: boolean;
@@ -29,24 +31,24 @@ type NavProps = {
 const variants = {
   visible: (i: number) => ({
     opacity: 1,
-    transition: {
-      delay: i * 0.12,
-    },
+    transition: { delay: i * 0.12 },
   }),
   hidden: { opacity: 0 },
 };
 
-const navLinks = [
-  { href: "#home", text: "Home" },
-  { href: "#about", text: "About" },
-  { href: "#projects", text: "Projects" },
-  { href: "#services", text: "Services" },
-  { href: "#contact", text: "Contact" },
-];
+function useNavLinks() {
+  const { t } = useLanguage();
+  return [
+    { href: "#home", text: t.nav.home },
+    { href: "#about", text: t.nav.about },
+    { href: "#projects", text: t.nav.projects },
+    { href: "#services", text: t.nav.services },
+    { href: "#contact", text: t.nav.contact },
+  ];
+}
 
 function handleClick(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
   const href = e.currentTarget.getAttribute("href");
-
   if (href && href.startsWith("#")) {
     e.preventDefault();
     const section = document.querySelector(href);
@@ -79,31 +81,25 @@ export default function Container(props: ContainerProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { lang, toggleLang, t } = useLanguage();
+  const navLinks = useNavLinks();
 
   const { children, ...customMeta } = props;
   const router = useRouter();
   const meta = {
     title: "Portofolio Jacly Permana",
-    description: `Full-stack website developer enthusiast.`,
+    description: "Fullstack Developer | System Analyst | UI/UX Designer.",
     image: "/assets/logo.png",
     type: "website",
     ...customMeta,
   };
 
-  // handle scroll
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
-    };
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 0);
     window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // preloader effect
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
@@ -119,21 +115,15 @@ export default function Container(props: ContainerProps) {
         <meta name="robots" content="follow, index" />
         <meta name="theme-color" content="#7B82FE" />
         <meta content={meta.description} name="description" />
-        <meta
-          property="og:url"
-          content={`https://www.wendoj.codes${router.asPath}`}
-        />
-        <link
-          rel="canonical"
-          href={`https://www.wendoj.codes${router.asPath}`}
-        />
+        <meta property="og:url" content={`https://www.wendoj.codes${router.asPath}`} />
+        <link rel="canonical" href={`https://www.wendoj.codes${router.asPath}`} />
         <meta property="og:type" content={meta.type} />
-        <meta property="og:site_name" content="WendoJ" />
+        <meta property="og:site_name" content="Jacly" />
         <meta property="og:description" content={meta.description} />
         <meta property="og:title" content={meta.title} />
         <meta property="og:image" content={meta.image} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="WendoJ" />
+        <meta name="twitter:site" content="Jacly" />
         <meta name="twitter:title" content={meta.title} />
         <meta name="twitter:description" content={meta.description} />
         <meta name="twitter:image" content={meta.image} />
@@ -166,8 +156,6 @@ export default function Container(props: ContainerProps) {
         <Link href="/">
           <span className="text-lg font-semibold">Jacly</span>
         </Link>
-
-        {/* Desktop menu */}
         <ul className={styles["desktop-nav"]}>
           {navLinks.map((link, i) => (
             <NavItem
@@ -178,9 +166,17 @@ export default function Container(props: ContainerProps) {
               className="text-base"
             />
           ))}
+          <li>
+            <button
+              onClick={toggleLang}
+              aria-label={`Switch language to ${t.language.switchTo}`}
+              className="ml-2 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-foreground/80 transition hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
+            >
+              <Globe className="h-3.5 w-3.5" />
+              {lang.toUpperCase()}
+            </button>
+          </li>
         </ul>
-
-        {/* Mobile menu */}
         <AnimatePresence key="menu">
           {isOpen && (
             <motion.div
@@ -190,38 +186,39 @@ export default function Container(props: ContainerProps) {
               exit={{ x: "100%" }}
               transition={{ duration: 1, type: "spring", bounce: 0.25 }}
             >
-              {/* Expandable menu */}
               <div className="flex h-20 max-h-20 min-h-[60px] w-full items-center justify-between border-b pl-[22px] pr-1">
-                <span className="text-base font-medium lowercase">Menu</span>
-                <button
-                  onClick={() => setIsOpen(!isOpen)}
-                  className={styles.burger}
-                  aria-controls="mobile-menu"
-                  aria-expanded="false"
-                >
-                  <span className="sr-only">Open main menu</span>
-                  <CrossIcon data-hide={!isOpen} />
-                </button>
+                <span className="text-base font-medium lowercase">{t.nav.menu}</span>
+                <div className="flex items-center gap-2 pr-2">
+                  <button
+                    onClick={toggleLang}
+                    aria-label={`Switch language to ${t.language.switchTo}`}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-foreground/80"
+                  >
+                    <Globe className="h-3.5 w-3.5" />
+                    {lang.toUpperCase()}
+                  </button>
+                  <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className={styles.burger}
+                    aria-controls="mobile-menu"
+                    aria-expanded="false"
+                  >
+                    <span className="sr-only">Open main menu</span>
+                    <CrossIcon data-hide={!isOpen} />
+                  </button>
+                </div>
               </div>
               <div className="flex h-full flex-col items-start justify-between overflow-y-auto">
-                {/* Links */}
                 <ul className="flex min-h-fit w-full flex-col items-start space-y-6 px-[22px] py-[58px]">
                   {navLinks.map((link, i) => (
                     <button key={link.href} onClick={() => setIsOpen(false)}>
-                      <NavItem
-                        href={link.href}
-                        text={link.text}
-                        i={i}
-                        className="text-xl"
-                      />
+                      <NavItem href={link.href} text={link.text} i={i} className="text-xl" />
                     </button>
                   ))}
                 </ul>
-
-                {/* Footer */}
                 <div className="flex min-h-fit w-full flex-col space-y-8 px-[22px] py-10">
                   <span className="text-sm text-muted-foreground">
-                    © {new Date().getFullYear()} wendo. All rights reserved.
+                    {new Date().getFullYear()} Jacly Permana. All rights reserved.
                   </span>
                 </div>
               </div>
@@ -239,13 +236,7 @@ export default function Container(props: ContainerProps) {
           }
         `}</style>
       </nav>
-
-      {/* Preloader */}
-      <AnimatePresence mode="wait">
-        {isLoading && <Preloader />}
-      </AnimatePresence>
-
-      {/* Main content */}
+      <AnimatePresence mode="wait">{isLoading && <Preloader />}</AnimatePresence>
       <main className={cn("container", props.className)}>{children}</main>
       <Footer />
     </>
@@ -263,27 +254,9 @@ function MenuIcon(props: IconProps) {
       fill="none"
       {...props}
     >
-      <path
-        d="M2.5 2.5H17.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M2.5 7.5H17.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M2.5 12.5H17.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M2.5 2.5H17.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2.5 7.5H17.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2.5 12.5H17.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

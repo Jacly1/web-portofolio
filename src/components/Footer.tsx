@@ -2,17 +2,18 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { MailIcon } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
 
 export default function Footer() {
-  // get the current time in UTC+1 time zone
   const [time, setTime] = useState<string>("");
+  const { t, lang } = useLanguage();
 
   useEffect(() => {
     const interval = setInterval(() => {
       const date = new Date();
       date.setHours(date.getHours());
       setTime(
-        date.toLocaleTimeString("en-US", {
+        date.toLocaleTimeString(lang === "id" ? "id-ID" : "en-US", {
           hour12: true,
           hour: "numeric",
           minute: "numeric",
@@ -20,7 +21,7 @@ export default function Footer() {
       );
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [lang]);
 
   return (
     <footer className="w-full bg-gradient-to-t from-primary/[1%] to-transparent">
@@ -28,8 +29,8 @@ export default function Footer() {
         <span className="flex flex-row items-center space-x-4">
           <hr className="hidden h-6 border-l border-muted md:flex" />
           <span className="flex hidden flex-row items-center space-x-2 md:flex">
-            <p className="text-xs text-muted-foreground">Local time:</p>
-            <p className="text-sm font-semibold">{time} UTC+1</p>
+            <p className="text-xs text-muted-foreground">{t.footer.time}</p>
+            <p className="text-sm font-semibold">{time}</p>
           </span>
         </span>
         <Link
